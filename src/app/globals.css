@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  /* Vibrant, broadly-appealing backdrop rather than an admin-panel white. */
+  background:
+    radial-gradient(1200px 600px at 100% -10%, #fce7f3 0%, transparent 55%),
+    radial-gradient(1000px 500px at -10% 10%, #e0e7ff 0%, transparent 50%),
+    radial-gradient(900px 500px at 50% 120%, #ccfbf1 0%, transparent 55%),
+    #f8fafc;
+  background-attachment: fixed;
+}
+
+/* Flashcard 3D flip */
+.card-flip {
+  perspective: 1200px;
+}
+.card-flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+.card-flip-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+.card-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: pop 0.35s ease-out both;
+}
