@@ -116,6 +116,38 @@ Open http://localhost:3000, sign up, pick your profession, and start learning.
 
 ---
 
+## Deploy it live (hosted)
+
+Two things, both free-tier:
+
+**1. Supabase (backend).** Create a project at [supabase.com](https://supabase.com),
+then in **SQL Editor** paste [`supabase/setup.sql`](supabase/setup.sql) — a single
+file that runs the schema, RLS, the practice table, and the full curriculum in one
+go — and **Run**. Copy your **Project URL** and **anon key** from
+**Project Settings → API**.
+
+**2. Vercel (frontend).** Import this repo at [vercel.com/new](https://vercel.com/new)
+(or use the button below) and set three env vars:
+
+| Variable | Value |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | your Supabase Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your Supabase anon key |
+| `NEXT_PUBLIC_SITE_URL` | your Vercel URL, e.g. `https://your-app.vercel.app` |
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgnaidu05%2Fgyaan&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_SITE_URL&envDescription=Supabase%20Project%20URL%20%2B%20anon%20key%20(Project%20Settings%20%E2%86%92%20API)%20and%20your%20deployed%20site%20URL&project-name=gyaan&repository-name=gyaan)
+
+Then in Supabase **Authentication → URL Configuration**, add your Vercel URL +
+`/auth/callback` to **Redirect URLs**. Nothing else is needed — the app builds and
+runs on Vercel's zero-config Next.js support. (No `ANTHROPIC_API_KEY` required:
+learners bring their own key for the Practice tab, or use the free offline check.)
+
+> The one-click button and a plain Vercel import both build the **default branch**,
+> so the app code needs to be on `main` first (currently it lives on the
+> `claude/lms-profession-personalization-k1ms8z` branch).
+
+---
+
 ## How personalization works
 
 Every learner walks the **same** curriculum so coverage of Claude is complete.
