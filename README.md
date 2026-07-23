@@ -13,6 +13,9 @@ see genuinely different examples.
   Engineering, HR, or Finance.
 - **Interactive, not walls of text:** flip-to-reveal flashcards with a light
   spaced-review loop, and scored multiple-choice quizzes with instant feedback.
+- **Hands-on practice (optional):** a "Practice" tab where you write a prompt for
+  your scenario, send it to the **real Claude**, and get its response plus a
+  rubric-graded critique — recognition turned into production.
 - **Gamified:** earn brownie points and unlock badges as you complete modules.
 
 Built with **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS**, with
@@ -52,9 +55,11 @@ Run the two SQL files **in order**. Two easy options:
 **Option A — Supabase SQL Editor (no CLI needed):**
 
 1. Open your project → **SQL Editor**.
-2. Paste the contents of [`supabase/migrations/0001_schema.sql`](supabase/migrations/0001_schema.sql)
-   and **Run**. This creates all tables, the profile-creation trigger, and the
-   Row Level Security policies.
+2. Run the migration files in order — paste each and **Run**:
+   [`0001_schema.sql`](supabase/migrations/0001_schema.sql) (tables, the
+   profile-creation trigger, and the Row Level Security policies), then
+   [`0002_practice.sql`](supabase/migrations/0002_practice.sql) (the table
+   behind the Practice tab).
 3. Paste the contents of [`supabase/seed.sql`](supabase/seed.sql) and **Run**.
    This loads the curriculum: 6 modules, per-profession examples, flashcards,
    quizzes, and badges.
@@ -63,9 +68,26 @@ Run the two SQL files **in order**. Two easy options:
 
 ```bash
 supabase link --project-ref <your-ref>
-supabase db push                        # applies supabase/migrations/*
+supabase db push                        # applies supabase/migrations/* in order
 psql "$SUPABASE_DB_URL" -f supabase/seed.sql
 ```
+
+Both SQL migrations and the seed have been verified to execute cleanly against a
+real PostgreSQL 16 instance, with the RLS policies confirmed to isolate each
+user's rows.
+
+## 2b. (Optional) Enable the live Practice tab
+
+The **Practice** tab lets a learner write a prompt and get a real Claude response
+plus coaching. It calls the Anthropic API, so it needs a key:
+
+1. Get a key at [console.anthropic.com](https://console.anthropic.com) → **API Keys**.
+2. Add `ANTHROPIC_API_KEY=...` to `.env.local` and restart.
+
+Without a key, the Learn / Flashcards / Quiz tabs all work normally and the
+Practice tab shows a friendly "add your key" notice. The key is used **server-side
+only** (in a Server Action) and is never exposed to the browser. Model defaults to
+`claude-opus-4-8`; override with `ANTHROPIC_MODEL`.
 
 ## 3. Configure auth
 
@@ -103,6 +125,19 @@ The personalization is a content layer, not a fork:
   learner sees the shared cards/questions **plus** the ones for their field.
 
 The selection logic lives in [`src/lib/data.ts`](src/lib/data.ts).
+
+## Live practice (recognition → production)
+
+Flashcards and quizzes test whether you *recognize* a good answer. The **Practice**
+tab tests whether you can *produce* one. The learner writes a prompt for their
+scenario; a Server Action sends it to Claude, which returns a structured JSON
+object containing (a) the response Claude would give to that prompt and (b) a
+rubric-graded critique (score plus specific strengths and improvements). The
+rubric is chosen per module from [`src/lib/practice.ts`](src/lib/practice.ts); the
+call and grading live in
+[`src/app/modules/[slug]/practice-actions.ts`](src/app/modules/%5Bslug%5D/practice-actions.ts).
+Attempts are stored in `practice_attempts` (RLS-protected), and a first attempt
+plus a strong prompt (≥80) award points.
 
 ## Gamification
 
@@ -151,6 +186,8 @@ src/
   [`@supabase/ssr`](https://github.com/supabase/auth-helpers) (MIT)
 - [`react-markdown`](https://github.com/remarkjs/react-markdown) +
   [`remark-gfm`](https://github.com/remarkjs/remark-gfm) (MIT) for lesson content
+- [`@anthropic-ai/sdk`](https://github.com/anthropics/anthropic-sdk-typescript)
+  (MIT) — powers the optional live Practice tab
 
 All dependencies are permissively licensed. This project is licensed under
 GPL-3.0 (see [LICENSE](LICENSE)).

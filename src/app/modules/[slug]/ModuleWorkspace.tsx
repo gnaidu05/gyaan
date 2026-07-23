@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Flashcards from "@/components/Flashcards";
 import Quiz, { type QuizResult } from "@/components/Quiz";
+import PromptPractice from "@/components/PromptPractice";
+import type { PracticeResult } from "@/app/modules/[slug]/practice-actions";
 import type { Flashcard, ModuleExample, QuizQuestion } from "@/lib/types";
 import { getProfession } from "@/lib/professions";
 
-type Tab = "learn" | "cards" | "quiz";
+type Tab = "learn" | "cards" | "quiz" | "practice";
 
-// Client shell that switches between the three learning surfaces of a module.
+// Client shell that switches between the learning surfaces of a module.
 export default function ModuleWorkspace({
   learnContent,
   example,
@@ -16,6 +18,8 @@ export default function ModuleWorkspace({
   flashcards,
   questions,
   onSubmitQuiz,
+  onSubmitPractice,
+  practiceConfigured,
 }: {
   learnContent: React.ReactNode;
   example: ModuleExample | null;
@@ -23,6 +27,8 @@ export default function ModuleWorkspace({
   flashcards: Flashcard[];
   questions: QuizQuestion[];
   onSubmitQuiz: (score: number, total: number, answers: number[]) => Promise<QuizResult>;
+  onSubmitPractice: (scenario: string, prompt: string) => Promise<PracticeResult>;
+  practiceConfigured: boolean;
 }) {
   const [tab, setTab] = useState<Tab>("learn");
   const prof = getProfession(profession);
@@ -31,6 +37,7 @@ export default function ModuleWorkspace({
     { key: "learn", label: "Learn", icon: "📖" },
     { key: "cards", label: `Flashcards (${flashcards.length})`, icon: "🃏" },
     { key: "quiz", label: `Quiz (${questions.length})`, icon: "🧩" },
+    { key: "practice", label: "Practice", icon: "🧠" },
   ];
 
   return (
@@ -115,7 +122,36 @@ export default function ModuleWorkspace({
         </div>
       )}
 
-      {tab === "quiz" && <Quiz questions={questions} onSubmit={onSubmitQuiz} />}
+      {tab === "quiz" && (
+        <div>
+          <Quiz questions={questions} onSubmit={onSubmitQuiz} />
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={() => setTab("practice")}
+              className="rounded-xl bg-slate-900 px-5 py-2.5 font-semibold text-white hover:bg-slate-800"
+            >
+              Now try it for real →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === "practice" && (
+        <div>
+          <div className="mb-4 rounded-2xl bg-white/70 p-4 text-sm text-slate-600 backdrop-blur">
+            <span className="font-semibold text-slate-800">🧠 Hands-on practice.</span>{" "}
+            Recognizing a good prompt is one thing — writing one is another. Draft a
+            prompt for your scenario, send it to the real Claude, and get its
+            response plus coaching on how to sharpen it.
+          </div>
+          <PromptPractice
+            scenario={example?.scenario ?? "Use Claude to help with a task from your work."}
+            samplePrompt={example?.sample_prompt ?? ""}
+            configured={practiceConfigured}
+            onSubmit={onSubmitPractice}
+          />
+        </div>
+      )}
     </div>
   );
 }

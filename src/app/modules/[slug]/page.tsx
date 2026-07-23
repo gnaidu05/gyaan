@@ -10,6 +10,8 @@ import AppHeader from "@/components/AppHeader";
 import Markdown from "@/components/Markdown";
 import ModuleWorkspace from "./ModuleWorkspace";
 import { submitQuiz } from "./actions";
+import { submitPractice } from "./practice-actions";
+import { isAnthropicConfigured } from "@/lib/anthropic";
 
 export default async function ModulePage({
   params,
@@ -31,8 +33,9 @@ export default async function ModulePage({
 
   const { module, example, flashcards, questions, progress } = detail;
 
-  // Bind the module slug so the client component gets an (score,total,answers) action.
+  // Bind the module slug so the client components get slug-free action signatures.
   const boundSubmit = submitQuiz.bind(null, slug);
+  const boundPractice = submitPractice.bind(null, slug);
 
   return (
     <>
@@ -77,6 +80,8 @@ export default async function ModulePage({
               flashcards={flashcards}
               questions={questions}
               onSubmitQuiz={boundSubmit}
+              onSubmitPractice={boundPractice}
+              practiceConfigured={isAnthropicConfigured}
             />
           </div>
         </div>
