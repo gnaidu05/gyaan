@@ -27,7 +27,7 @@ values (
   'Conversations, context, and how to talk to Claude',
   'chat',
   1,
-  E'Claude is an AI assistant you talk to in plain language — no special syntax, no menus. You type what you need, Claude responds, and you keep going. The whole interaction is a **conversation**, and that turn-by-turn structure is the single most important thing to understand.\n\n**Context is everything.** Claude reads your entire conversation each time it replies — every message you have sent and every message it has sent back. This shared history is called the *context window*. Because Claude remembers what was said earlier in the thread, you can say "make it shorter" or "use a more formal tone" without repeating yourself. Start a brand-new chat and that memory is gone; Claude begins fresh with no knowledge of your previous threads.\n\n**Iterate, do not restart.** The best results almost never come from the first message. Treat Claude like a capable colleague: give it a first draft request, then refine. "Good, but cut the jargon." "Add a line about pricing." "Now turn it into three bullet points." Each follow-up builds on everything before it.\n\n**Give Claude a role and a goal.** A quick line like "You are helping me, a busy professional, do X for audience Y" sharply improves the response. Claude adapts its tone, depth, and format to whatever you tell it about the situation.\n\n- **One chat = one topic.** Keep unrelated tasks in separate conversations so the context stays clean.\n- **Longer is not always better** — but relevant detail always helps. Paste the actual email, the real data, the exact error.\n- **Ask Claude to ask you questions** ("what do you need to know from me?") when you are not sure what to include.',
+  E'Claude is an AI assistant you talk to in plain language — no special syntax, no menus. You type what you need, Claude responds, and you keep going. The whole interaction is a **conversation**, and that turn-by-turn structure is the single most important thing to understand.\n\n**Context is everything.** Claude reads your entire conversation each time it replies — every message you have sent and every message it has sent back. This shared history is called the *context window*. Because Claude remembers what was said earlier in the thread, you can say "make it shorter" or "use a more formal tone" without repeating yourself. Start a brand-new chat and that memory is gone — Claude begins fresh with no knowledge of your previous threads.\n\n**Iterate, do not restart.** The best results almost never come from the first message. Treat Claude like a capable colleague: give it a first draft request, then refine. "Good, but cut the jargon." "Add a line about pricing." "Now turn it into three bullet points." Each follow-up builds on everything before it.\n\n**Give Claude a role and a goal.** A quick line like "You are helping me, a busy professional, do X for audience Y" sharply improves the response. Claude adapts its tone, depth, and format to whatever you tell it about the situation.\n\n- **One chat = one topic.** Keep unrelated tasks in separate conversations so the context stays clean.\n- **Longer is not always better** — but relevant detail always helps. Paste the actual email, the real data, the exact error.\n- **Ask Claude to ask you questions** ("what do you need to know from me?") when you are not sure what to include.',
   '💬',
   'from-sky-500 to-indigo-400',
   100
@@ -40,7 +40,7 @@ values (
   'Be specific, give context, show examples',
   'prompting',
   2,
-  E'A *prompt* is simply the instruction you give Claude. Vague prompts get generic answers; specific prompts get useful ones. Prompting is a skill, and a handful of habits will take you most of the way there.\n\n**1. Be specific about the outcome.** Instead of "write about our product," say "write a 120-word LinkedIn post announcing our product to operations managers, friendly but not salesy, ending with a question." State the length, audience, tone, and format you want. Claude cannot read your mind — but it is very good at following clear direction.\n\n**2. Give context.** Paste the source material: the data, the previous email, the transcript, the brand guidelines. Claude reasons from what you provide. The more relevant raw material it has, the less it has to guess.\n\n**3. Show an example.** If you have a sample of the style or format you want ("here is a headline I loved — write five more like it"), include it. Showing one good example is often worth a paragraph of description. This is called *few-shot* prompting.\n\n**4. Tell Claude who to be.** A role primer — "act as a skeptical CFO reviewing this" — shapes the whole response.\n\n**5. Ask for structure.** Request a table, numbered steps, or a specific template and Claude will format accordingly.\n\n- **Split big asks into steps.** "First outline it, then we will draft each section."\n- **Say what to avoid** as clearly as what you want ("no buzzwords, no exclamation marks").\n- **If the answer misses, do not just rephrase — add the missing constraint.** Nine times out of ten the fix is more context, not different wording.',
+  E'A *prompt* is simply the instruction you give Claude. Vague prompts get generic answers — specific prompts get useful ones. Prompting is a skill, and a handful of habits will take you most of the way there.\n\n**1. Be specific about the outcome.** Instead of "write about our product," say "write a 120-word LinkedIn post announcing our product to operations managers, friendly but not salesy, ending with a question." State the length, audience, tone, and format you want. Claude cannot read your mind — but it is very good at following clear direction.\n\n**2. Give context.** Paste the source material: the data, the previous email, the transcript, the brand guidelines. Claude reasons from what you provide. The more relevant raw material it has, the less it has to guess.\n\n**3. Show an example.** If you have a sample of the style or format you want ("here is a headline I loved — write five more like it"), include it. Showing one good example is often worth a paragraph of description. This is called *few-shot* prompting.\n\n**4. Tell Claude who to be.** A role primer — "act as a skeptical CFO reviewing this" — shapes the whole response.\n\n**5. Ask for structure.** Request a table, numbered steps, or a specific template and Claude will format accordingly.\n\n- **Split big asks into steps.** "First outline it, then we will draft each section."\n- **Say what to avoid** as clearly as what you want ("no buzzwords, no exclamation marks").\n- **If the answer misses, do not just rephrase — add the missing constraint.** Nine times out of ten the fix is more context, not different wording.',
   '✍️',
   'from-fuchsia-500 to-pink-400',
   100
@@ -66,7 +66,7 @@ values (
   'Documents, apps, and visuals you can edit live',
   'artifacts',
   4,
-  E'Sometimes you do not want an answer *in* the chat — you want a thing you can keep, edit, and share. That is an **Artifact**: a standalone piece of content that opens in its own panel beside the conversation. Documents, tables, code, charts, small web apps — all live as Artifacts.\n\n**Artifacts are editable and versioned.** Claude generates a first version; you say "make the header blue" or "add a fourth column" and Claude updates the same Artifact in place. You are not copying text back and forth — you are iterating on a living document.\n\n**Claude can build working software.** Ask for a calculator, an interactive dashboard, or a form and Claude writes real HTML/JavaScript that actually runs in the Artifact panel. You can click the buttons and see it work, then refine it by describing changes in plain language.\n\n**Great Artifact candidates:**\n- Polished documents (briefs, one-pagers, reports) you want to export.\n- Tables and comparison matrices you will keep tweaking.\n- Interactive tools — calculators, quizzes, mockups, dashboards.\n- Diagrams and charts that visualize your data.\n\n**How to get good Artifacts:** describe the purpose and audience, then iterate. "Build me a one-page pricing sheet" gets you a start; "make it two columns, add a FAQ, use our blue" gets you the finished piece. Because it is a real document, you can copy it out, download it, or share it when it is ready.',
+  E'Sometimes you do not want an answer *in* the chat — you want a thing you can keep, edit, and share. That is an **Artifact**: a standalone piece of content that opens in its own panel beside the conversation. Documents, tables, code, charts, small web apps — all live as Artifacts.\n\n**Artifacts are editable and versioned.** Claude generates a first version — you say "make the header blue" or "add a fourth column" and Claude updates the same Artifact in place. You are not copying text back and forth — you are iterating on a living document.\n\n**Claude can build working software.** Ask for a calculator, an interactive dashboard, or a form and Claude writes real HTML/JavaScript that actually runs in the Artifact panel. You can click the buttons and see it work, then refine it by describing changes in plain language.\n\n**Great Artifact candidates:**\n- Polished documents (briefs, one-pagers, reports) you want to export.\n- Tables and comparison matrices you will keep tweaking.\n- Interactive tools — calculators, quizzes, mockups, dashboards.\n- Diagrams and charts that visualize your data.\n\n**How to get good Artifacts:** describe the purpose and audience, then iterate. "Build me a one-page pricing sheet" gets you a start — "make it two columns, add a FAQ, use our blue" gets you the finished piece. Because it is a real document, you can copy it out, download it, or share it when it is ready.',
   '🎨',
   'from-amber-500 to-orange-400',
   100
@@ -79,7 +79,7 @@ values (
   'Let Claude search, browse, and use your tools',
   'tools',
   5,
-  E'On its own, Claude reasons from its training and from what you paste in. **Tools and connectors** let it reach beyond that — to fetch live information and act in the systems you already use.\n\n**Web search** lets Claude look things up in real time. Ask about a recent announcement, current pricing, or this quarter''s news and Claude searches, reads the results, and answers with up-to-date information and links — instead of relying on what it learned during training.\n\n**Connectors** link Claude to your own tools: Google Drive, Gmail, GitHub, Slack, calendars, and many more. Once connected, Claude can pull a document from your Drive, read a thread, or reference a file without you copy-pasting it. Some connectors are read-only; others let Claude take actions, always within the permissions you grant.\n\n**The Model Context Protocol (MCP)** is the open standard that makes this extensible — teams can plug their own internal systems into Claude the same way.\n\n**Why it matters:** tools close the gap between "Claude gives good advice" and "Claude does the task using my real data and current facts."\n\n- **Ask Claude to search** when a fact might be recent or when you need a source you can verify.\n- **Verify what matters.** Tools reduce guesswork, but you still check anything high-stakes — click the links Claude cites.\n- **Grant only the access you need.** Connect the tools relevant to a task and review permissions.\n- **Be explicit:** "search the web for X," "check the file in my Drive called Y," so Claude uses the right tool for the job.',
+  E'On its own, Claude reasons from its training and from what you paste in. **Tools and connectors** let it reach beyond that — to fetch live information and act in the systems you already use.\n\n**Web search** lets Claude look things up in real time. Ask about a recent announcement, current pricing, or this quarter''s news and Claude searches, reads the results, and answers with up-to-date information and links — instead of relying on what it learned during training.\n\n**Connectors** link Claude to your own tools: Google Drive, Gmail, GitHub, Slack, calendars, and many more. Once connected, Claude can pull a document from your Drive, read a thread, or reference a file without you copy-pasting it. Some connectors are read-only — others let Claude take actions, always within the permissions you grant.\n\n**The Model Context Protocol (MCP)** is the open standard that makes this extensible — teams can plug their own internal systems into Claude the same way.\n\n**Why it matters:** tools close the gap between "Claude gives good advice" and "Claude does the task using my real data and current facts."\n\n- **Ask Claude to search** when a fact might be recent or when you need a source you can verify.\n- **Verify what matters.** Tools reduce guesswork, but you still check anything high-stakes — click the links Claude cites.\n- **Grant only the access you need.** Connect the tools relevant to a task and review permissions.\n- **Be explicit:** "search the web for X," "check the file in my Drive called Y," so Claude uses the right tool for the job.',
   '🔌',
   'from-violet-500 to-purple-400',
   100
@@ -92,7 +92,7 @@ values (
   'Chaining Claude into your daily work',
   'workflows',
   6,
-  E'The real payoff comes when you stop using Claude for one-off questions and start building **workflows** — repeatable sequences where each step feeds the next. This module ties together everything before it: chat, prompting, Projects, Artifacts, and tools.\n\n**Chain the steps.** Most real work is a pipeline, not a single ask. Research → outline → draft → refine → format → repurpose. Do it as a conversation: each Claude output becomes the input to the next step, and you steer at every stage.\n\n**Anchor the workflow in a Project** so the context (your voice, your rules, your reference docs) is loaded automatically every time you run it. Reach for **tools** when a step needs live data, and produce **Artifacts** for the deliverables you will keep or share.\n\n**Make it repeatable.** Once a workflow works, save the sequence of prompts. Next time it is a template you fill in, not a blank page. Many people keep a note of their best prompt chains for recurring tasks.\n\n**Keep a human in the loop.** Claude drafts, accelerates, and organizes; you decide, verify, and own the result. The goal is not to remove your judgment but to remove the busywork around it.\n\n- **Start where it hurts most** — the recurring task you dread. Automate that first.\n- **Break it into stages** and get each stage right before chaining them.\n- **Reuse and refine.** Every good prompt chain you save compounds over time.',
+  E'The real payoff comes when you stop using Claude for one-off questions and start building **workflows** — repeatable sequences where each step feeds the next. This module ties together everything before it: chat, prompting, Projects, Artifacts, and tools.\n\n**Chain the steps.** Most real work is a pipeline, not a single ask. Research → outline → draft → refine → format → repurpose. Do it as a conversation: each Claude output becomes the input to the next step, and you steer at every stage.\n\n**Anchor the workflow in a Project** so the context (your voice, your rules, your reference docs) is loaded automatically every time you run it. Reach for **tools** when a step needs live data, and produce **Artifacts** for the deliverables you will keep or share.\n\n**Make it repeatable.** Once a workflow works, save the sequence of prompts. Next time it is a template you fill in, not a blank page. Many people keep a note of their best prompt chains for recurring tasks.\n\n**Keep a human in the loop.** Claude drafts, accelerates, and organizes — you decide, verify, and own the result. The goal is not to remove your judgment but to remove the busywork around it.\n\n- **Start where it hurts most** — the recurring task you dread. Automate that first.\n- **Break it into stages** and get each stage right before chaining them.\n- **Reuse and refine.** Every good prompt chain you save compounds over time.',
   '🚀',
   'from-rose-500 to-red-400',
   100
@@ -196,7 +196,7 @@ insert into public.module_examples (module_id, profession, scenario, sample_prom
 ((select id from public.modules where slug='artifacts'), 'sales',
  'A prospect keeps asking whether your product pays for itself. You want to hand them an interactive ROI calculator they can plug their own numbers into, instead of a static PDF.',
  E'Build an interactive ROI calculator as a web app. Inputs: number of employees, hours saved per employee per week, average hourly cost. Output: monthly savings, annual savings, and payback period given our $2,000/month price. Make the inputs sliders, show results updating live, and keep the design clean and on-brand-neutral.',
- 'Claude builds a working calculator Artifact the prospect can manipulate live; you tweak the formula or styling in seconds and share a tool that makes your value concrete instead of asserted.'),
+ 'Claude builds a working calculator Artifact the prospect can manipulate live — you tweak the formula or styling in seconds and share a tool that makes your value concrete instead of asserted.'),
 ((select id from public.modules where slug='artifacts'), 'engineering',
  'You want to prototype a UI component to settle a design debate quickly, without spinning up a branch and a dev server just to show what you mean.',
  E'Build a working React-style component as an interactive Artifact: a multi-select filter dropdown with search, select-all, and a count badge showing how many options are chosen. Include sample data of 12 items. Make it self-contained and functional so I can click through the interactions.',
@@ -208,7 +208,7 @@ insert into public.module_examples (module_id, profession, scenario, sample_prom
 ((select id from public.modules where slug='artifacts'), 'finance',
  'You need to walk leadership through next year''s budget scenarios and want an interactive view of how changing a couple of assumptions moves the bottom line, not three static tabs.',
  E'Build an interactive budget dashboard as a web app. Inputs: revenue growth %, headcount added, marketing spend. Show projected annual revenue, total costs, and net margin updating live as I change inputs, plus a simple bar chart comparing three preset scenarios (conservative, base, aggressive). Keep it clean.',
- 'Claude builds a live budget dashboard Artifact where leadership sees assumptions flow to the bottom line in real time; you adjust drivers and chart formatting on the fly during the review.');
+ 'Claude builds a live budget dashboard Artifact where leadership sees assumptions flow to the bottom line in real time — you adjust drivers and chart formatting on the fly during the review.');
 
 -- ---- tool-use -------------------------------------------------------------
 insert into public.module_examples (module_id, profession, scenario, sample_prompt, outcome) values
@@ -305,7 +305,7 @@ insert into public.flashcards (deck_id, profession, front, back, order_index) va
 -- ---- prompting ------------------------------------------------------------
 insert into public.flashcards (deck_id, profession, front, back, order_index) values
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='prompting')), null,
- 'The single biggest prompting upgrade?', 'Be specific about the outcome — state length, audience, tone, and format. Specific prompts get useful answers; vague prompts get generic ones.', 1),
+ 'The single biggest prompting upgrade?', 'Be specific about the outcome — state length, audience, tone, and format. Specific prompts get useful answers — vague prompts get generic ones.', 1),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='prompting')), null,
  'What is "few-shot" prompting?', 'Showing Claude one or more examples of the style or format you want. A single good example often teaches more than a paragraph of description.', 2),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='prompting')), null,
@@ -384,15 +384,15 @@ insert into public.flashcards (deck_id, profession, front, back, order_index) va
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'recruitment',
  'How do tools sharpen an intake call prep?', 'Web search pulls current salary benchmarks and recent company news (funding, layoffs) with links, so your outreach and intake are informed, not guesswork.', 5),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'marketing',
- 'Why use web search for campaign planning?', 'Competitor positioning and trending angles change constantly; search grounds your strategy in what is happening now, with citations, rather than last year''s knowledge.', 6),
+ 'Why use web search for campaign planning?', 'Competitor positioning and trending angles change constantly — search grounds your strategy in what is happening now, with citations, rather than last year''s knowledge.', 6),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'sales',
- 'How do search plus a connector build a pre-call brief?', 'Search pulls the account''s recent news while a Drive connector retrieves your last meeting notes; Claude merges them so you open the call current and continuous.', 7),
+ 'How do search plus a connector build a pre-call brief?', 'Search pulls the account''s recent news while a Drive connector retrieves your last meeting notes — Claude merges them so you open the call current and continuous.', 7),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'engineering',
  'Why connect Claude to your repo instead of pasting a snippet?', 'It can read the real files and tests through the connector and cross-check current API docs via search, grounding analysis in your actual code rather than assumptions.', 8),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'hr',
  'How do tools help answer a tricky leave question?', 'A connector reads your internal policy while search checks current statutory rules, surfacing any gap between the two with sources — on-policy and legally current.', 9),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='tool-use')), 'finance',
- 'Why use search when updating a forecast?', 'Rates, FX, and competitors'' latest reported figures must be accurate as of today; search retrieves them with citations so assumptions rest on verifiable current data.', 10);
+ 'Why use search when updating a forecast?', 'Rates, FX, and competitors'' latest reported figures must be accurate as of today — search retrieves them with citations so assumptions rest on verifiable current data.', 10);
 
 -- ---- workflows ------------------------------------------------------------
 insert into public.flashcards (deck_id, profession, front, back, order_index) values
@@ -403,7 +403,7 @@ insert into public.flashcards (deck_id, profession, front, back, order_index) va
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='workflows')), null,
  'How do you make a workflow repeatable?', 'Save the sequence of prompts that worked. Next time it is a template you fill in, not a blank page, and good prompt chains compound over time.', 3),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='workflows')), null,
- 'What is the human''s role in a workflow?', 'To decide, verify, and own the result. Claude drafts, accelerates, and organizes; you keep judgment in the loop and remove the busywork around it.', 4),
+ 'What is the human''s role in a workflow?', 'To decide, verify, and own the result. Claude drafts, accelerates, and organizes — you keep judgment in the loop and remove the busywork around it.', 4),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='workflows')), 'recruitment',
  'What does a hiring-kit workflow chain together?', 'JD, then screening rubric, then outreach variants, then an interview guide — each approved step feeding the next, reusable for the next requisition.', 5),
 ((select id from public.flashcard_decks where module_id=(select id from public.modules where slug='workflows')), 'marketing',
@@ -430,7 +430,7 @@ insert into public.quiz_questions (module_id, profession, question, options, cor
 ((select id from public.modules where slug='chat-basics'), null,
  'You start a brand-new chat. What does Claude know about your previous conversations?',
  '["Everything from the last 24 hours","Nothing — each new chat starts fresh","Only the last message you sent","All chats from the same day"]'::jsonb,
- 1, 'Claude has no memory across separate chats; a new conversation begins with a clean slate.', 2),
+ 1, 'Claude has no memory across separate chats — a new conversation begins with a clean slate.', 2),
 ((select id from public.modules where slug='chat-basics'), null,
  'The best way to improve a response you are not happy with is usually to:',
  '["Start over in a new chat every time","Send the exact same message again","Refine with a follow-up in the same thread","Make the message as short as possible"]'::jsonb,
@@ -473,11 +473,11 @@ insert into public.quiz_questions (module_id, profession, question, options, cor
 ((select id from public.modules where slug='prompting'), null,
  'What is "few-shot" prompting?',
  '["Sending many prompts quickly","Including one or more examples of the style you want","Limiting yourself to a few words","Asking Claude to answer in a few seconds"]'::jsonb,
- 1, 'Few-shot prompting means showing example(s); one good example often teaches more than a long description.', 2),
+ 1, 'Few-shot prompting means showing example(s) — one good example often teaches more than a long description.', 2),
 ((select id from public.modules where slug='prompting'), null,
  'An answer misses the mark. What most reliably fixes it?',
  '["Rephrasing the same request differently","Adding the missing context or constraint","Sending it again unchanged","Making the prompt shorter"]'::jsonb,
- 1, 'Usually the gap is information Claude did not have; adding the missing context or constraint fixes it.', 3),
+ 1, 'Usually the gap is information Claude did not have — adding the missing context or constraint fixes it.', 3),
 ((select id from public.modules where slug='prompting'), null,
  'Why assign Claude a role like "act as a skeptical CFO"?',
  '["It makes responses longer","It shapes the perspective, tone, and emphasis of the whole answer","It disables web search","It guarantees a shorter reply"]'::jsonb,
@@ -559,7 +559,7 @@ insert into public.quiz_questions (module_id, profession, question, options, cor
 ((select id from public.modules where slug='artifacts'), null,
  'How do you change an existing Artifact?',
  '["Delete it and start over each time","Describe the change and Claude updates it in place","Edit the raw database","Copy it into a new chat"]'::jsonb,
- 1, 'You iterate by describing changes in plain language; Claude updates the same Artifact rather than you copy-pasting.', 2),
+ 1, 'You iterate by describing changes in plain language — Claude updates the same Artifact rather than you copy-pasting.', 2),
 ((select id from public.modules where slug='artifacts'), null,
  'Can an Artifact be working software?',
  '["No, Artifacts are always static text","Yes — Claude can write HTML/JavaScript that actually runs in the panel","Only if you can code yourself","Only spreadsheets"]'::jsonb,
@@ -621,7 +621,7 @@ insert into public.quiz_questions (module_id, profession, question, options, cor
  1, 'Because competitor messaging shifts constantly, live search keeps your strategy current with citations.', 6),
 ((select id from public.modules where slug='tool-use'), 'sales',
  'How do search and a Drive connector build a pre-call brief?',
- '["They cold-call the prospect","Search pulls the account''s recent news; the connector pulls your last notes; Claude merges them","They delete old opportunities","They set the meeting price"]'::jsonb,
+ '["They cold-call the prospect","Search pulls the account''s recent news — the connector pulls your last notes — Claude merges them","They delete old opportunities","They set the meeting price"]'::jsonb,
  1, 'Combining live news with your prior notes gives you a brief that is both current and continuous.', 7),
 ((select id from public.modules where slug='tool-use'), 'engineering',
  'Why connect Claude to your repo instead of pasting one file?',
@@ -653,7 +653,7 @@ insert into public.quiz_questions (module_id, profession, question, options, cor
 ((select id from public.modules where slug='workflows'), null,
  'What is the human''s role in a Claude workflow?',
  '["To step away entirely","To decide, verify, and own the result while Claude handles the busywork","To avoid reviewing anything","To only write the first prompt"]'::jsonb,
- 1, 'Claude accelerates and organizes; you keep judgment in the loop and own the outcome.', 4),
+ 1, 'Claude accelerates and organizes — you keep judgment in the loop and own the outcome.', 4),
 ((select id from public.modules where slug='workflows'), 'recruitment',
  'What does a hiring-kit workflow chain together?',
  '["Only a job posting","JD, then screening rubric, then outreach, then interview guide — each feeding the next","Payroll and benefits","A single interview question"]'::jsonb,
