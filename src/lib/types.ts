@@ -31,6 +31,10 @@ export type ModuleExample = {
   outcome: string;
 };
 
+export type Difficulty = "beginner" | "intermediate" | "advanced";
+export type CardType = "concept" | "scenario" | "reverse";
+export type QuestionKind = "mcq" | "true_false" | "scenario" | "fill_blank";
+
 export type Flashcard = {
   id: string;
   deck_id: string;
@@ -38,6 +42,8 @@ export type Flashcard = {
   front: string;
   back: string;
   order_index: number;
+  difficulty: Difficulty;
+  card_type: CardType;
 };
 
 export type QuizQuestion = {
@@ -49,6 +55,9 @@ export type QuizQuestion = {
   correct_index: number;
   explanation: string | null;
   order_index: number;
+  difficulty: Difficulty;
+  kind: QuestionKind;
+  hint: string | null;
 };
 
 export type ModuleProgress = {

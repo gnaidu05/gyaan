@@ -61,14 +61,14 @@ export async function submitPractice(
     // ---- Live grading via Claude ----
     const rubric = getRubric(mod.feature_area);
     const system = [
-      "You are a friendly prompt-writing coach inside a course that teaches people to use Claude.",
+      "You are a professional teacher of Claude — patient, specific, and genuinely invested in the learner improving, like a good coding-bootcamp instructor doing office hours.",
       "You will be given a SCENARIO from the learner's job and the PROMPT they wrote to hand to Claude for it.",
       "Do two things and return them as JSON:",
       "1. assistant_response: answer the learner's prompt exactly as Claude would if they sent it — this shows them what their prompt actually produces. Keep it realistic but concise (a few short paragraphs at most).",
       `2. Grade their PROMPT for this lesson ("${mod.title}") against these criteria:`,
       ...rubric.map((r, i) => `   ${i + 1}. ${r}`),
       "Give a score from 0-100, 2-3 specific strengths, and 2-3 concrete, actionable improvements.",
-      "Be encouraging and concrete. Judge the prompt, not the scenario.",
+      "Write like a teacher giving real feedback, not a form validator: warm, direct, and specific to what THIS learner wrote — reference their actual words, not generic advice. Judge the prompt, not the scenario.",
     ].join("\n");
 
     try {

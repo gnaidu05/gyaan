@@ -10,9 +10,41 @@ export type QuizResult = {
   moduleCompleted: boolean;
 };
 
-// Interactive scored quiz: one question at a time, immediate feedback with an
-// explanation, running score, and a results screen. On finish it calls the
-// server action to persist the attempt and award points/badges.
+const DIFFICULTY_BADGE: Record<string, { label: string; icon: string; cls: string }> = {
+  beginner: { label: "Warm-up", icon: "🌱", cls: "bg-emerald-100 text-emerald-700" },
+  intermediate: { label: "Level up", icon: "🚀", cls: "bg-indigo-100 text-indigo-700" },
+  advanced: { label: "Challenge", icon: "🏆", cls: "bg-rose-100 text-rose-700" },
+};
+
+const KIND_LABEL: Record<string, string> = {
+  mcq: "Multiple choice",
+  true_false: "True or false",
+  scenario: "Scenario",
+  fill_blank: "Fill in the blank",
+};
+
+// Teacher-voice reactions so feedback doesn't feel like a form validator.
+const CORRECT_LINES = [
+  "Nice catch!",
+  "Exactly right.",
+  "That's the one — well spotted.",
+  "Yes! You've got this.",
+];
+const INCORRECT_LINES = [
+  "Not quite — here's the idea:",
+  "Close, but let's look again:",
+  "A common mix-up. Here's why:",
+  "Good try — the key detail is this:",
+];
+function pickLine(lines: string[], seed: number) {
+  return lines[seed % lines.length];
+}
+
+// Interactive scored quiz: one question at a time, difficulty-tagged and
+// kind-varied (multiple choice / true-false / scenario / fill-in-the-blank),
+// with an optional teacher hint, immediate feedback, a running score, and a
+// results screen. On finish it calls the server action to persist the
+// attempt and award points/badges.
 export default function Quiz({
   questions,
   onSubmit,
@@ -23,6 +55,7 @@ export default function Quiz({
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [picked, setPicked] = useState<number | null>(null);
+  const [hintShown, setHintShown] = useState(false);
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [pending, startTransition] = useTransition();
@@ -40,6 +73,8 @@ export default function Quiz({
     (s, a, i) => s + (a === questions[i].correct_index ? 1 : 0),
     0,
   );
+  const badge = DIFFICULTY_BADGE[q.difficulty] ?? DIFFICULTY_BADGE.beginner;
+  const isTwoUp = q.kind === "true_false" && q.options.length === 2;
 
   function choose(i: number) {
     if (picked !== null) return; // locked once answered
@@ -55,6 +90,7 @@ export default function Quiz({
     if (idx + 1 < questions.length) {
       setIdx(idx + 1);
       setPicked(null);
+      setHintShown(false);
     } else {
       const finalScore = answers.reduce(
         (s, a, i) => s + (a === questions[i].correct_index ? 1 : 0),
@@ -72,6 +108,7 @@ export default function Quiz({
     setIdx(0);
     setAnswers([]);
     setPicked(null);
+    setHintShown(false);
     setFinished(false);
     setResult(null);
   }
@@ -114,6 +151,10 @@ export default function Quiz({
             ? "Module complete — the next one is unlocked on your dashboard."
             : "Score 60% or higher to complete this module and unlock the next one."}
         </p>
+        <p className="mt-2 text-xs text-slate-400">
+          New question mix next time you take this quiz — retake it any time for fresh
+          practice.
+        </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
@@ -135,23 +176,49 @@ export default function Quiz({
 
   return (
     <div className="rounded-3xl border border-white/70 bg-white p-7 shadow-xl">
-      <div className="mb-4 flex items-center justify-between text-sm font-medium text-slate-500">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
         <span>
           Question {idx + 1} of {questions.length}
           {q.profession ? " · 🎯 applied to your role" : ""}
         </span>
         <span>Score: {score}</span>
       </div>
-      <div className="mb-5 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+      <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div
           className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 transition-all"
           style={{ width: `${(idx / questions.length) * 100}%` }}
         />
       </div>
 
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${badge.cls}`}>
+          {badge.icon} {badge.label}
+        </span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
+          {KIND_LABEL[q.kind] ?? "Question"}
+        </span>
+      </div>
+
       <h3 className="text-xl font-semibold text-slate-800">{q.question}</h3>
 
-      <div className="mt-5 space-y-3">
+      {q.hint && picked === null && (
+        <div className="mt-3">
+          {hintShown ? (
+            <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
+              💡 {q.hint}
+            </p>
+          ) : (
+            <button
+              onClick={() => setHintShown(true)}
+              className="text-sm font-semibold text-amber-600 hover:text-amber-800 hover:underline"
+            >
+              💡 Ask your teacher for a hint
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className={`mt-5 ${isTwoUp ? "grid grid-cols-2 gap-3" : "space-y-3"}`}>
         {q.options.map((opt, i) => {
           const isCorrect = i === q.correct_index;
           const isPicked = picked === i;
@@ -167,7 +234,9 @@ export default function Quiz({
               key={i}
               onClick={() => choose(i)}
               disabled={picked !== null}
-              className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left font-medium transition ${cls}`}
+              className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left font-medium transition ${cls} ${
+                isTwoUp ? "justify-center text-center text-lg font-bold" : ""
+              }`}
             >
               <span>{opt}</span>
               {picked !== null && isCorrect && <span>✅</span>}
@@ -177,9 +246,13 @@ export default function Quiz({
         })}
       </div>
 
-      {picked !== null && q.explanation && (
+      {picked !== null && (
         <p className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-          <span className="font-semibold text-slate-700">Why: </span>
+          <span className="font-semibold text-slate-700">
+            {picked === q.correct_index
+              ? pickLine(CORRECT_LINES, idx)
+              : pickLine(INCORRECT_LINES, idx)}{" "}
+          </span>
           {q.explanation}
         </p>
       )}

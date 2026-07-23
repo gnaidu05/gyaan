@@ -3,6 +3,22 @@
 import { useMemo, useState } from "react";
 import type { Flashcard } from "@/lib/types";
 
+const DIFFICULTY_BADGE: Record<string, { label: string; icon: string; cls: string }> = {
+  beginner: { label: "Warm-up", icon: "🌱", cls: "bg-emerald-100 text-emerald-700" },
+  intermediate: { label: "Level up", icon: "🚀", cls: "bg-indigo-100 text-indigo-700" },
+  advanced: { label: "Challenge", icon: "🏆", cls: "bg-rose-100 text-rose-700" },
+};
+
+// Different card_types are framed with different front/back labels so the
+// review pattern itself varies — a straight concept check, a "what would you
+// do" scenario, and a reverse-recall card that shows the answer first and asks
+// you to name the term.
+const CARD_FRAME: Record<string, { front: string; back: string }> = {
+  concept: { front: "Question", back: "Answer" },
+  scenario: { front: "Scenario", back: "What to do" },
+  reverse: { front: "You know this as…", back: "The term is" },
+};
+
 // Interactive flashcard reviewer: flip to reveal, self-rate ("Got it" / "Review
 // again"), and cards you miss are re-queued at the end — a light spaced-review
 // loop. Progress bar tracks unique cards mastered.
@@ -58,6 +74,9 @@ export default function Flashcards({ cards }: { cards: Flashcard[] }) {
           Deck complete — {cards.length} cards reviewed
         </h3>
         <p className="mt-1 text-emerald-700">Nice recall. Ready for the quiz?</p>
+        <p className="mt-1 text-xs text-emerald-600">
+          Come back next time for a fresh mix of cards.
+        </p>
         <button
           onClick={restart}
           className="mt-4 rounded-xl border border-emerald-300 bg-white px-5 py-2 font-semibold text-emerald-700 hover:bg-emerald-100"
@@ -69,14 +88,25 @@ export default function Flashcards({ cards }: { cards: Flashcard[] }) {
   }
 
   const pct = Math.round((mastered.size / cards.length) * 100);
+  const badge = DIFFICULTY_BADGE[card.difficulty] ?? DIFFICULTY_BADGE.beginner;
+  const frame = CARD_FRAME[card.card_type] ?? CARD_FRAME.concept;
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between text-sm font-medium text-slate-500">
-        <span>
-          {card.profession ? "🎯 For your role" : "Concept"} · {mastered.size}/
-          {cards.length} mastered
-        </span>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${badge.cls}`}>
+            {badge.icon} {badge.label}
+          </span>
+          {card.profession && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500">
+              🎯 For your role
+            </span>
+          )}
+          <span>
+            {mastered.size}/{cards.length} mastered
+          </span>
+        </div>
         <span>{pct}%</span>
       </div>
       <div className="mb-4 h-2 w-full overflow-hidden rounded-full bg-slate-200">
@@ -96,7 +126,7 @@ export default function Flashcards({ cards }: { cards: Flashcard[] }) {
             {/* Front */}
             <div className="card-face absolute inset-0 flex flex-col justify-between rounded-3xl border border-white/70 bg-white p-7 shadow-xl">
               <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
-                Question
+                {frame.front}
               </span>
               <p className="text-xl font-semibold text-slate-800">{card.front}</p>
               <span className="text-sm text-slate-400">Tap to flip ↻</span>
@@ -104,7 +134,7 @@ export default function Flashcards({ cards }: { cards: Flashcard[] }) {
             {/* Back */}
             <div className="card-face card-face-back absolute inset-0 flex flex-col justify-between rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-fuchsia-50 p-7 shadow-xl">
               <span className="text-xs font-bold uppercase tracking-widest text-fuchsia-500">
-                Answer
+                {frame.back}
               </span>
               <p className="text-lg text-slate-800">{card.back}</p>
               <span className="text-sm text-slate-400">Tap to flip ↻</span>

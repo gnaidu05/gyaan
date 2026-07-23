@@ -54,15 +54,20 @@ Run the two SQL files **in order**. Two easy options:
 
 **Option A — Supabase SQL Editor (no CLI needed):**
 
-1. Open your project → **SQL Editor**.
-2. Run the migration files in order — paste each and **Run**:
-   [`0001_schema.sql`](supabase/migrations/0001_schema.sql) (tables, the
-   profile-creation trigger, and the Row Level Security policies), then
-   [`0002_practice.sql`](supabase/migrations/0002_practice.sql) (the table
-   behind the Practice tab).
-3. Paste the contents of [`supabase/seed.sql`](supabase/seed.sql) and **Run**.
-   This loads the curriculum: 6 modules, per-profession examples, flashcards,
-   quizzes, and badges.
+**Easiest: one paste.** Open your project → **SQL Editor**, paste the entire
+contents of [`supabase/setup.sql`](supabase/setup.sql), and **Run**. That single
+file applies every migration (schema + RLS, the Practice table, the
+difficulty/kind/hint columns) and loads the full curriculum in one go. Safe to
+re-run any time — including after pulling an update to this repo — since it
+clears and reloads content without touching your users' accounts or progress.
+
+Prefer to see each piece separately? Run the migration files in order — paste
+each and **Run**: [`0001_schema.sql`](supabase/migrations/0001_schema.sql)
+(tables, the profile-creation trigger, and RLS policies),
+[`0002_practice.sql`](supabase/migrations/0002_practice.sql) (the Practice
+table), [`0003_variety.sql`](supabase/migrations/0003_variety.sql) (difficulty
+tiers, flashcard/quiz format variety, hints) — then paste
+[`supabase/seed.sql`](supabase/seed.sql) and **Run** to load the curriculum.
 
 **Option B — Supabase CLI:**
 
@@ -70,6 +75,8 @@ Run the two SQL files **in order**. Two easy options:
 supabase link --project-ref <your-ref>
 supabase db push                        # applies supabase/migrations/* in order
 psql "$SUPABASE_DB_URL" -f supabase/seed.sql
+# or, equivalently, just:
+psql "$SUPABASE_DB_URL" -f supabase/setup.sql
 ```
 
 Both SQL migrations and the seed have been verified to execute cleanly against a
@@ -163,6 +170,35 @@ The personalization is a content layer, not a fork:
   learner sees the shared cards/questions **plus** the ones for their field.
 
 The selection logic lives in [`src/lib/data.ts`](src/lib/data.ts).
+
+## Flashcards & quizzes: a bigger pool, a fresh mix every time
+
+Each module draws from a large content pool (27 flashcards and 27 quiz questions
+per module, mixing generic + profession-specific) rather than a fixed set. Every
+time a learner opens a module — including a fresh login — the app pulls a new
+random, difficulty-scaffolded subset (8 flashcards, 6 quiz questions) and
+reshuffles multiple-choice option order, so the same session is never repeated
+and the correct answer isn't always in the same slot. The sampling logic is in
+[`src/lib/session-pick.ts`](src/lib/session-pick.ts).
+
+Content is also written like a **professional teacher** would structure a
+lesson, not a flat list of trivia:
+
+- **Three difficulty tiers** — `beginner` (recall), `intermediate` (application),
+  `advanced` (judgment/trade-offs) — labeled in the UI as 🌱 Warm-up, 🚀 Level up,
+  🏆 Challenge, and a session is scaffolded easy-to-hard.
+- **Flashcard patterns** (`card_type`): `concept` (direct Q&A), `scenario` (a
+  short workplace situation to reason through), `reverse` (shown the
+  answer/definition first — recall the term).
+- **Quiz formats** (`kind`): multiple choice, true/false, scenario-based, and
+  fill-in-the-blank — mixed within a session rather than one repetitive format.
+- **Hints.** Every question has an optional, teacher-style nudge the learner can
+  reveal before answering, without giving away the answer.
+
+Grading stays instant and free for all of this — every kind is still scored as
+multiple choice under the hood (true/false is a 2-option MCQ, fill-in-the-blank's
+options are candidate words), so no LLM call is needed to check an answer. Schema
+in [`supabase/migrations/0003_variety.sql`](supabase/migrations/0003_variety.sql).
 
 ## Live practice (recognition → production)
 

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_PROFESSION } from "@/lib/professions";
+import { pickSession, shuffleOptions } from "@/lib/session-pick";
 import type {
   Badge,
   Flashcard,
@@ -9,6 +10,10 @@ import type {
   Profile,
   QuizQuestion,
 } from "@/lib/types";
+
+// How many items a single Flashcards / Quiz session draws from the pool.
+const FLASHCARD_SESSION_SIZE = 8;
+const QUIZ_SESSION_SIZE = 6;
 
 // ---------------------------------------------------------------------------
 // Personalization engine
@@ -119,24 +124,27 @@ export async function getModuleDetail(
     examples[0] ??
     null;
 
-  // Flashcards: generic (NULL) + this profession's cards.
+  // Flashcards: generic (NULL) + this profession's cards, pooled, then a fresh
+  // shuffled session-sized subset drawn on every render.
   const deckIds = ((decksRes.data as { id: string }[]) ?? []).map((d) => d.id);
-  let flashcards: Flashcard[] = [];
+  let flashcardPool: Flashcard[] = [];
   if (deckIds.length) {
     const { data: cards } = await supabase
       .from("flashcards")
       .select("*")
       .in("deck_id", deckIds)
-      .or(`profession.is.null,profession.eq.${prof}`)
-      .order("order_index");
-    flashcards = (cards as Flashcard[]) ?? [];
+      .or(`profession.is.null,profession.eq.${prof}`);
+    flashcardPool = (cards as Flashcard[]) ?? [];
   }
+  const flashcards = pickSession(flashcardPool, FLASHCARD_SESSION_SIZE);
 
-  // Quiz: generic + this profession's question.
+  // Quiz: generic + this profession's questions, pooled, then a fresh session
+  // draw with option order reshuffled so the answer position also varies.
   const allQuestions = (questionsRes.data as QuizQuestion[]) ?? [];
-  const questions = allQuestions.filter(
+  const questionPool = allQuestions.filter(
     (q) => q.profession === null || q.profession === prof,
   );
+  const questions = pickSession(questionPool, QUIZ_SESSION_SIZE).map(shuffleOptions);
 
   return {
     module: mod,

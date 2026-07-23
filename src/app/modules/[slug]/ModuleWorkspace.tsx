@@ -114,6 +114,12 @@ export default function ModuleWorkspace({
 
       {tab === "cards" && (
         <div>
+          <div className="mb-4 rounded-2xl bg-white/70 p-4 text-sm text-slate-600 backdrop-blur">
+            <span className="font-semibold text-slate-800">🧑‍🏫 Your teacher&rsquo;s note.</span>{" "}
+            This deck mixes warm-up, level-up, and challenge cards — some straight
+            concept checks, some scenarios, some reverse-recall — reshuffled with a
+            fresh set each time you come back.
+          </div>
           <Flashcards cards={flashcards} />
           <div className="mt-6 flex justify-end">
             <button
@@ -128,6 +134,12 @@ export default function ModuleWorkspace({
 
       {tab === "quiz" && (
         <div>
+          <div className="mb-4 rounded-2xl bg-white/70 p-4 text-sm text-slate-600 backdrop-blur">
+            <span className="font-semibold text-slate-800">🧑‍🏫 Your teacher&rsquo;s note.</span>{" "}
+            Questions scale from a warm-up to a real challenge, mixing multiple choice,
+            true/false, scenarios, and fill-in-the-blank. Stuck? Ask for a hint before
+            you answer. Every attempt draws a fresh mix — no memorizing the order.
+          </div>
           <Quiz questions={questions} onSubmit={onSubmitQuiz} />
           <div className="mt-6 flex justify-end">
             <button
