@@ -19,7 +19,7 @@ export default function ModuleWorkspace({
   questions,
   onSubmitQuiz,
   onSubmitPractice,
-  practiceConfigured,
+  operatorKeyConfigured,
 }: {
   learnContent: React.ReactNode;
   example: ModuleExample | null;
@@ -27,8 +27,12 @@ export default function ModuleWorkspace({
   flashcards: Flashcard[];
   questions: QuizQuestion[];
   onSubmitQuiz: (score: number, total: number, answers: number[]) => Promise<QuizResult>;
-  onSubmitPractice: (scenario: string, prompt: string) => Promise<PracticeResult>;
-  practiceConfigured: boolean;
+  onSubmitPractice: (
+    scenario: string,
+    prompt: string,
+    apiKey: string,
+  ) => Promise<PracticeResult>;
+  operatorKeyConfigured: boolean;
 }) {
   const [tab, setTab] = useState<Tab>("learn");
   const prof = getProfession(profession);
@@ -147,7 +151,7 @@ export default function ModuleWorkspace({
           <PromptPractice
             scenario={example?.scenario ?? "Use Claude to help with a task from your work."}
             samplePrompt={example?.sample_prompt ?? ""}
-            configured={practiceConfigured}
+            operatorConfigured={operatorKeyConfigured}
             onSubmit={onSubmitPractice}
           />
         </div>

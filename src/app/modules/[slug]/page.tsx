@@ -11,7 +11,7 @@ import Markdown from "@/components/Markdown";
 import ModuleWorkspace from "./ModuleWorkspace";
 import { submitQuiz } from "./actions";
 import { submitPractice } from "./practice-actions";
-import { isAnthropicConfigured } from "@/lib/anthropic";
+import { isOperatorKeyConfigured } from "@/lib/anthropic";
 
 export default async function ModulePage({
   params,
@@ -81,7 +81,7 @@ export default async function ModulePage({
               questions={questions}
               onSubmitQuiz={boundSubmit}
               onSubmitPractice={boundPractice}
-              practiceConfigured={isAnthropicConfigured}
+              operatorKeyConfigured={isOperatorKeyConfigured}
             />
           </div>
         </div>

@@ -76,18 +76,24 @@ Both SQL migrations and the seed have been verified to execute cleanly against a
 real PostgreSQL 16 instance, with the RLS policies confirmed to isolate each
 user's rows.
 
-## 2b. (Optional) Enable the live Practice tab
+## 2b. The Practice tab & API keys (bring-your-own-key)
 
 The **Practice** tab lets a learner write a prompt and get a real Claude response
-plus coaching. It calls the Anthropic API, so it needs a key:
+plus coaching. It works three ways, in order of preference — **you don't have to
+configure anything**:
 
-1. Get a key at [console.anthropic.com](https://console.anthropic.com) → **API Keys**.
-2. Add `ANTHROPIC_API_KEY=...` to `.env.local` and restart.
+1. **Bring-your-own-key (default):** each learner pastes their own Anthropic API
+   key into the Practice tab. It's stored **only in their browser** (localStorage),
+   passed to the grading Server Action per request, and **never saved or logged on
+   the server**. Cost falls on the learner and is a cent or two per practice.
+2. **Free offline check:** with no key at all, Practice still scores the prompt
+   against a rubric (context, a clear ask, output constraints, an example) instantly
+   and for free — lower fidelity, no live Claude response.
+3. **Operator key (optional):** set `ANTHROPIC_API_KEY` in `.env.local` to provide
+   live grading for everyone without them needing their own key.
 
-Without a key, the Learn / Flashcards / Quiz tabs all work normally and the
-Practice tab shows a friendly "add your key" notice. The key is used **server-side
-only** (in a Server Action) and is never exposed to the browser. Model defaults to
-`claude-opus-4-8`; override with `ANTHROPIC_MODEL`.
+Model defaults to `claude-opus-4-8`; override with `ANTHROPIC_MODEL` (e.g.
+`claude-haiku-4-5` for the cheapest live grading).
 
 ## 3. Configure auth
 
@@ -130,14 +136,17 @@ The selection logic lives in [`src/lib/data.ts`](src/lib/data.ts).
 
 Flashcards and quizzes test whether you *recognize* a good answer. The **Practice**
 tab tests whether you can *produce* one. The learner writes a prompt for their
-scenario; a Server Action sends it to Claude, which returns a structured JSON
-object containing (a) the response Claude would give to that prompt and (b) a
-rubric-graded critique (score plus specific strengths and improvements). The
-rubric is chosen per module from [`src/lib/practice.ts`](src/lib/practice.ts); the
-call and grading live in
+scenario; the grading Server Action either sends it to Claude — which returns a
+structured JSON object with (a) the response Claude would give to that prompt and
+(b) a rubric-graded critique — or, with no key, scores it via a free offline
+heuristic ([`src/lib/practice-heuristic.ts`](src/lib/practice-heuristic.ts)). The
+per-module rubric is in [`src/lib/practice.ts`](src/lib/practice.ts); the grading
+and key resolution live in
 [`src/app/modules/[slug]/practice-actions.ts`](src/app/modules/%5Bslug%5D/practice-actions.ts).
-Attempts are stored in `practice_attempts` (RLS-protected), and a first attempt
-plus a strong prompt (≥80) award points.
+The learner's key (BYOK) is held only in their browser and passed per request —
+`src/lib/anthropic.ts` never reads it from anywhere but the incoming argument (or
+the optional operator env key). Attempts are stored in `practice_attempts`
+(RLS-protected); a first attempt plus a strong prompt (≥80) award points.
 
 ## Gamification
 
