@@ -69,6 +69,19 @@ table), [`0003_variety.sql`](supabase/migrations/0003_variety.sql) (difficulty
 tiers, flashcard/quiz format variety, hints) — then paste
 [`supabase/seed.sql`](supabase/seed.sql) and **Run** to load the curriculum.
 
+**If a one-paste run errors** (e.g. `ERROR: relation "a" does not exist`) —
+`setup.sql`/`seed.sql` are large (200KB+ with the full flashcard/quiz pool), and
+some browser-based SQL editors can silently truncate a very large single paste,
+which surfaces as a confusing parse error. Use the pre-split, verified fallback
+instead: after the three migration files above, paste and **Run** these three
+[`supabase/chunks/`](supabase/chunks) files **in order**, each as its own paste
+— they're self-contained (each wraps its own transaction) and were confirmed to
+apply cleanly in sequence against a real Postgres instance:
+
+1. [`1_modules_examples_decks.sql`](supabase/chunks/1_modules_examples_decks.sql) (~40KB)
+2. [`2_flashcards.sql`](supabase/chunks/2_flashcards.sql) (~68KB)
+3. [`3_quiz_badges.sql`](supabase/chunks/3_quiz_badges.sql) (~91KB)
+
 **Option B — Supabase CLI:**
 
 ```bash
