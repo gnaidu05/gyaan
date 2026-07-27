@@ -82,6 +82,17 @@ apply cleanly in sequence against a real Postgres instance:
 2. [`2_flashcards.sql`](supabase/chunks/2_flashcards.sql) (~68KB)
 3. [`3_quiz_badges.sql`](supabase/chunks/3_quiz_badges.sql) (~91KB)
 
+Each chunk deletes only the tables it owns before inserting, so any single
+chunk is safe to re-run on its own, any time — e.g. if just one paste errors
+partway through, re-running that one chunk alone won't hit duplicate-key
+errors on the others. One caveat: chunk 1 owns `modules`/`module_examples`/
+`flashcard_decks`, and `flashcards`/`quiz_questions` reference those with
+`on delete cascade` — so re-running chunk 1 **alone** also clears flashcards
+and quiz questions as a side effect. If that happens, just run chunks 2 and 3
+again afterward to repopulate them. Re-running chunk 2 or chunk 3 alone never
+affects the others. All of this was verified against a real Postgres instance,
+including the exact recovery sequence above.
+
 **Option B — Supabase CLI:**
 
 ```bash

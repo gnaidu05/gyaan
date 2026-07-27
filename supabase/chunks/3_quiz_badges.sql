@@ -2,9 +2,15 @@
 -- Gyaan LMS — Seed data, chunk 3 of 3 (run these AFTER the schema migrations,
 -- in order 1 -> 2 -> 3). Split out because the combined file is large enough
 -- that some browser-based SQL editors can silently truncate a single paste.
+-- Each chunk deletes ONLY the tables it owns before inserting, so any single
+-- chunk is safe to re-run on its own, any time, without running the others.
 -- ============================================================================
 
 begin;
+
+-- Clean slate for the tables THIS chunk owns (FK-safe order).
+delete from public.quiz_questions;
+delete from public.badges;
 
 -- ===========================================================================
 -- QUIZ QUESTIONS  (27 per module: 9 generic across 3 difficulty tiers + 3 per profession x 6)

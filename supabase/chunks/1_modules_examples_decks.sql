@@ -2,19 +2,22 @@
 -- Gyaan LMS — Seed data, chunk 1 of 3 (run these AFTER the schema migrations,
 -- in order 1 -> 2 -> 3). Split out because the combined file is large enough
 -- that some browser-based SQL editors can silently truncate a single paste.
+-- Each chunk deletes ONLY the tables it owns before inserting, so any single
+-- chunk is safe to re-run on its own, any time, without running the others.
+-- Caveat for THIS chunk: it owns modules, module_examples, and
+-- flashcard_decks. flashcards (chunk 2) and quiz_questions (chunk 3) both
+-- reference those with "on delete cascade", so re-running chunk 1 alone will
+-- also clear flashcards and quiz_questions as a side effect — if that
+-- happens, just run chunks 2 and 3 again afterward to repopulate them.
+-- Re-running chunk 2 or chunk 3 alone never affects chunk 1's tables.
 -- ============================================================================
 
 begin;
 
--- ---------------------------------------------------------------------------
--- Clean slate (FK-safe order)
--- ---------------------------------------------------------------------------
-delete from public.flashcards;
+-- Clean slate for the tables THIS chunk owns (FK-safe order).
 delete from public.flashcard_decks;
-delete from public.quiz_questions;
 delete from public.module_examples;
 delete from public.modules;
-delete from public.badges;
 
 -- ===========================================================================
 -- MODULES
