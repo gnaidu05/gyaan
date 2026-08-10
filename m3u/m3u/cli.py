@@ -62,6 +62,47 @@ def _cmd_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_check(args: argparse.Namespace) -> int:
+    from .checker import active_playlist, check_playlist
+
+    playlist = parse_file(args.file)
+    total = len(playlist)
+    done = {"n": 0}
+
+    def report(result) -> None:
+        done["n"] += 1
+        mark = "OK " if result.ok else "DEAD"
+        if args.verbose or not result.ok:
+            print(
+                f"[{done['n']:>3}/{total}] {mark} {result.label} "
+                f"({result.reason})",
+                file=sys.stderr,
+            )
+
+    results = check_playlist(
+        playlist,
+        timeout=args.timeout,
+        workers=args.workers,
+        on_result=report,
+    )
+
+    active = active_playlist(results, attributes=playlist.attributes)
+    alive = len(active)
+    print(
+        f"\nActive: {alive}/{total}  ({total - alive} dead)",
+        file=sys.stderr,
+    )
+
+    text = active.dumps(extended=True)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        print(f"Wrote {alive} active channels to {args.output}", file=sys.stderr)
+    else:
+        sys.stdout.write(text)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="m3u", description="Work with M3U playlists.")
     parser.add_argument("--version", action="version", version=f"m3u {__version__}")
@@ -84,6 +125,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit a plain playlist without #EXTINF metadata.",
     )
     p_build.set_defaults(func=_cmd_build)
+
+    p_check = sub.add_parser(
+        "check", help="Probe each stream and emit only the active channels."
+    )
+    p_check.add_argument("file")
+    p_check.add_argument("-o", "--output", help="Output file (default: stdout).")
+    p_check.add_argument(
+        "-t", "--timeout", type=float, default=12.0, help="Per-request timeout (s)."
+    )
+    p_check.add_argument(
+        "-w", "--workers", type=int, default=24, help="Concurrent probes."
+    )
+    p_check.add_argument(
+        "-v", "--verbose", action="store_true", help="Report every result, not just failures."
+    )
+    p_check.set_defaults(func=_cmd_check)
 
     return parser
 

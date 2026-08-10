@@ -40,6 +40,7 @@ def parse(text: str) -> Playlist:
     pending_duration = -1
     pending_title = None
     pending_attrs: dict = {}
+    pending_vlc: dict = {}
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
@@ -47,8 +48,15 @@ def parse(text: str) -> Playlist:
             continue
 
         if line.startswith("#"):
-            if line.startswith("#EXTINF:"):
+            if line.startswith("#EXTM3U"):
+                playlist.attributes.update(_ATTR_RE.findall(line))
+            elif line.startswith("#EXTINF:"):
                 pending_duration, pending_title, pending_attrs = _parse_extinf(line)
+            elif line.startswith("#EXTVLCOPT:"):
+                option = line[len("#EXTVLCOPT:"):]
+                if "=" in option:
+                    key, value = option.split("=", 1)
+                    pending_vlc[key.strip()] = value.strip()
             # Other directives (#EXTM3U, #PLAYLIST, comments) carry no per-track state.
             continue
 
@@ -58,11 +66,13 @@ def parse(text: str) -> Playlist:
                 title=pending_title,
                 duration=pending_duration,
                 attributes=pending_attrs,
+                vlc_options=pending_vlc,
             )
         )
         pending_duration = -1
         pending_title = None
         pending_attrs = {}
+        pending_vlc = {}
 
     return playlist
 

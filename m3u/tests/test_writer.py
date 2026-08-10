@@ -32,6 +32,24 @@ def test_simple_output_has_no_metadata():
     assert text.strip().splitlines() == ["a.mp3", "b.mp3"]
 
 
+def test_header_and_vlc_options_roundtrip():
+    text = (
+        '#EXTM3U x-tvg-url="http://epg.example/guide.xml"\n'
+        "#EXTINF:-1,Channel\n"
+        "#EXTVLCOPT:http-referrer=https://example.com/\n"
+        "http://example.com/stream.m3u8\n"
+    )
+    pl = m3u.parse(text)
+    out = pl.dumps(extended=True)
+
+    assert 'x-tvg-url="http://epg.example/guide.xml"' in out
+    assert "#EXTVLCOPT:http-referrer=https://example.com/" in out
+
+    reparsed = m3u.parse(out)
+    assert reparsed.attributes == pl.attributes
+    assert reparsed[0].vlc_options == pl[0].vlc_options
+
+
 def test_write_and_read_file(tmp_path):
     pl = m3u.Playlist()
     pl.append("song.mp3", title="Song", duration=42)

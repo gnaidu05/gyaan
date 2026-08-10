@@ -51,3 +51,22 @@ def test_total_duration():
     pl = m3u.parse(EXTENDED)
     # 210 known + one stream (-1, excluded) -> 210
     assert pl.total_duration == 210
+
+
+def test_parse_header_attributes():
+    text = '#EXTM3U x-tvg-url="http://epg.example/guide.xml"\nsong.mp3\n'
+    pl = m3u.parse(text)
+    assert pl.attributes["x-tvg-url"] == "http://epg.example/guide.xml"
+
+
+def test_parse_vlc_options():
+    text = (
+        "#EXTM3U\n"
+        "#EXTINF:-1,Referrer Channel\n"
+        "#EXTVLCOPT:http-referrer=https://example.com/\n"
+        "#EXTVLCOPT:http-user-agent=CustomAgent/1.0\n"
+        "http://example.com/stream.m3u8\n"
+    )
+    pl = m3u.parse(text)
+    assert pl[0].vlc_options["http-referrer"] == "https://example.com/"
+    assert pl[0].vlc_options["http-user-agent"] == "CustomAgent/1.0"

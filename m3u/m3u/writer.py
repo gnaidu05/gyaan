@@ -22,9 +22,16 @@ def dumps(playlist: Playlist, extended: bool = True) -> str:
     """
     lines = []
     if extended:
-        lines.append("#EXTM3U")
+        header = "#EXTM3U"
+        if playlist.attributes:
+            header += " " + " ".join(
+                f'{k}="{v}"' for k, v in playlist.attributes.items()
+            )
+        lines.append(header)
         for track in playlist:
             lines.append(_format_extinf(track))
+            for key, value in track.vlc_options.items():
+                lines.append(f"#EXTVLCOPT:{key}={value}")
             lines.append(track.path)
     else:
         for track in playlist:

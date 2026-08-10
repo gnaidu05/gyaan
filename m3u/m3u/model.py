@@ -16,12 +16,15 @@ class Track:
         duration: Length in seconds; ``-1`` means unknown/stream.
         attributes: Extra ``#EXTINF`` key="value" attributes such as
             ``tvg-id`` or ``group-title`` used by IPTV playlists.
+        vlc_options: ``#EXTVLCOPT`` options that precede the URL, e.g.
+            ``http-referrer`` and ``http-user-agent``.
     """
 
     path: str
     title: Optional[str] = None
     duration: int = -1
     attributes: dict = field(default_factory=dict)
+    vlc_options: dict = field(default_factory=dict)
 
     @property
     def is_stream(self) -> bool:
@@ -35,8 +38,14 @@ class Track:
 class Playlist:
     """An ordered collection of :class:`Track` objects."""
 
-    def __init__(self, tracks: Optional[Iterable[Track]] = None) -> None:
+    def __init__(
+        self,
+        tracks: Optional[Iterable[Track]] = None,
+        attributes: Optional[dict] = None,
+    ) -> None:
         self.tracks: List[Track] = list(tracks) if tracks else []
+        # Attributes on the ``#EXTM3U`` header line, e.g. ``x-tvg-url``.
+        self.attributes: dict = dict(attributes) if attributes else {}
 
     # -- construction helpers -------------------------------------------------
     @classmethod
@@ -57,10 +66,17 @@ class Playlist:
         path: str,
         title: Optional[str] = None,
         duration: int = -1,
+        vlc_options: Optional[dict] = None,
         **attributes,
     ) -> Track:
         """Add a track and return it."""
-        track = Track(path=path, title=title, duration=duration, attributes=attributes)
+        track = Track(
+            path=path,
+            title=title,
+            duration=duration,
+            attributes=attributes,
+            vlc_options=vlc_options or {},
+        )
         self.tracks.append(track)
         return track
 
