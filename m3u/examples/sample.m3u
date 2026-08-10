@@ -1,7 +1,0 @@
-#EXTM3U
-#EXTINF:210,Ludwig van Beethoven - Symphony No. 5
-media/beethoven-5.mp3
-#EXTINF:184,Miles Davis - So What
-media/so-what.mp3
-#EXTINF:-1 tvg-id="news1" group-title="Live",Example News Stream
-http://example.com/live/news.m3u8
